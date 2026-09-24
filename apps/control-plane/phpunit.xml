@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         backupGlobals="false"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="test"/>
+        <env name="SERVICE_NAME" value="riskweft"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="DATABASE_DSN_REF" value="secret://local/postgres-dsn"/>
+        <env name="SECRET_LOCAL_POSTGRES_DSN" value="pgsql://riskweft:riskweft@127.0.0.1:5432/riskweft_test"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="CANONICAL_HASH_ALGORITHM" value="sha256"/>
+        <env name="MAX_ARCHITECTURE_BYTES" value="2097152"/>
+        <env name="RULESET_PATH" value="./rules"/>
+        <env name="OTEL_EXPORTER_OTLP_ENDPOINT" value="http://127.0.0.1:4318"/>
+        <env name="LOG_LEVEL" value="debug"/>
+    </php>
+</phpunit>

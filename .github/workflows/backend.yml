@@ -1,0 +1,101 @@
+name: control-plane
+
+# Phase 0 exit criterion (ROADMAP_V7.md Definition of Done: "CI is green
+# from a clean checkout"). This workflow is the actual, executable proof
+# that tests/Unit and tests/Feature pass - the sandbox that authored this
+# code has no PHP/Composer/PostgreSQL runtime and could not run them itself
+# (see docs/phase-0-exit-evidence.md), so this is the first real execution
+# of the Phase 0 test suite. A green run here is what turns this phase's
+# status from "code-complete" into "verified".
+
+on:
+  push:
+    paths:
+      - 'apps/control-plane/**'
+      - '.github/workflows/backend.yml'
+      - 'contracts/**'
+  pull_request:
+    paths:
+      - 'apps/control-plane/**'
+      - '.github/workflows/backend.yml'
+      - 'contracts/**'
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    working-directory: apps/control-plane
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: riskweft
+          POSTGRES_PASSWORD: riskweft
+          POSTGRES_DB: riskweft_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, pdo_pgsql, pgsql, redis, bcmath, ctype, dom, fileinfo, filter, intl, json, openssl, tokenizer, xml
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: apps/control-plane/vendor
+          key: composer-${{ hashFiles('apps/control-plane/composer.lock') }}
+          restore-keys: composer-
+
+      - name: composer install
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare .env
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+        env:
+          # Overrides so the app boots against the service container above
+          # regardless of what .env.example's own local-dev defaults say.
+          SECRET_LOCAL_POSTGRES_DSN: pgsql://riskweft:riskweft@127.0.0.1:5432/riskweft_test
+          SECRET_LOCAL_VALKEY_DSN: redis://127.0.0.1:6379/0
+
+      - name: Run migrations against a clean database
+        run: php artisan migrate:fresh --force
+        env:
+          SECRET_LOCAL_POSTGRES_DSN: pgsql://riskweft:riskweft@127.0.0.1:5432/riskweft_test
+
+      - name: Pint (code style)
+        run: composer pint:test
+
+      - name: Larastan (static analysis)
+        run: composer analyse
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit --colors=always
+        env:
+          SECRET_LOCAL_POSTGRES_DSN: pgsql://riskweft:riskweft@127.0.0.1:5432/riskweft_test
+
+      - name: Independent canonicalization/hashing cross-check (Python mirror)
+        working-directory: .
+        run: python3 scripts/verify-canonicalization.py
+
+      - name: Repository structure validation
+        working-directory: .
+        run: python3 scripts/validate_repo.py

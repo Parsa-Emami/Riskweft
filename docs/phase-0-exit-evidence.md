@@ -1,0 +1,146 @@
+# Phase 0 exit evidence — Canonical model/schema
+
+Status: **code-complete, partially execution-verified**. See "What is NOT
+yet verified" below before treating this as done in the sense
+`ACCEPTANCE_GATES_V7.md` means by "evidence-backed". This document exists
+because of `spec/16_SPRINT_ZERO_BACKLOG.md` first-30-commits item 11:
+"docs(phase0): record exit evidence and ADR updates."
+
+## Why this document is unusually explicit about environment limits
+
+This phase was implemented in a sandboxed environment with **no PHP,
+Composer, or PostgreSQL installed, and no network egress to install
+them** (Packagist, apt and the npm registry are all unreachable from that
+sandbox). Every PHP file in `apps/control-plane` was therefore hand-authored
+and never executed by its author. `ROADMAP_V7.md`'s own rule -
+"Status claims must be evidence-backed" - means that gap has to be stated
+plainly rather than glossed over. What follows is exactly what was, and
+was not, actually run.
+
+## What was delivered
+
+- `apps/control-plane`: a Laravel 13 API skeleton (hand-authored composer
+  manifest, `bootstrap/app.php`, config, routes - no `composer create-project`
+  scaffold was available to generate from).
+- **Domain layer** (`app/Domain/Architecture`, zero framework imports):
+  `ArchitectureDocument`, `ArchitectureEntity`, `ArchitectureRelationship`,
+  `ArchitectureRevision`, `Canonicalizer`, `ContentHash`,
+  `ArchitectureDocumentValidator`, `RevisionStatus`/`EntityKind`/
+  `RelationshipKind`, and the domain exception hierarchy.
+- **Application layer**: `CommitArchitectureRevisionCommand`/`Handler`,
+  `GetArchitectureRevisionQuery`/`Handler` - the only code paths allowed to
+  perform the Phase 0 mutation.
+- **Infrastructure**: Eloquent models + migrations for `projects`,
+  `architecture_revisions`, `revision_entities`, `revision_relationships`,
+  `project_members`, `outbox_messages`, `audit_events`, `idempotency_keys`,
+  `users`; `SecretReferenceResolver` (ADR 0007); repositories; audit logger;
+  outbox publisher.
+- **HTTP**: `POST /api/v1/projects/{project}/revisions` and
+  `GET /api/v1/revisions/{revision}` exactly as
+  `contracts/openapi.v1.yaml` declares them - bearer auth (Sanctum),
+  project-scoped RBAC (`ProjectPolicy`), required Idempotency-Key with
+  replay-or-reject semantics, `X-Request-ID` correlation, per-principal rate
+  limiting, and a uniform `OperationResult`/`ApiError` envelope that never
+  leaks a raw exception message or stack trace.
+- **Tests**: `tests/Unit/Domain/Architecture/*` (canonicalization golden +
+  hash-stability + reordering-invariance tests, validator negative cases,
+  content-hash tests) and `tests/Feature/*` (full commit flow including
+  auth/cross-scope-IDOR/conflict/idempotency/validation, read flow, schema
+  migration tests, the immutability-trigger test, config-schema compliance,
+  redaction, health check).
+- **CI**: `.github/workflows/backend.yml` - PHP 8.3 + PostgreSQL 18 service
+  container + Pint + Larastan + PHPUnit + the two Python cross-checks below.
+- **ADRs 0006-0008** documenting the genesis sentinel, the local secret
+  resolver scope, and the immutability/referential-integrity design.
+
+## What is genuinely, executably verified right now
+
+Nothing above could be run through PHP. What *was* actually run, in this
+repository, in this sandbox:
+
+| Check | Command | Result |
+|---|---|---|
+| PHP structural sanity (brace/heredoc balance, PSR-4 namespace match, no duplicate classes, every own-namespace `use` resolves) across all 100 files | `python3 scripts/php_sanity_check.py apps/control-plane` | **Pass** |
+| Canonicalization/hashing determinism - an independent Python re-implementation of `Canonicalizer`/`ContentHash`, including the exact golden-fixture byte string pinned in `CanonicalizerTest.php` | `python3 scripts/verify-canonicalization.py` | **Pass, 9/9 checks** |
+| `contracts/config.schema.json` vs. both `.env.example` files agree (the same assertions `ConfigSchemaComplianceTest.php` makes, re-run directly) | ad hoc Python during authoring | **Pass** |
+| Repository-wide contract validation (pre-existing project tooling) | `python3 scripts/validate_repo.py` | **Pass** |
+
+These are real, useful signals - they catch typos, structural mistakes and
+algorithm-design errors - but they are **not** `php -l`, not
+`composer install`, and not `phpunit`. Treat this phase as "should work,
+carefully reviewed, never executed as PHP" until the table below is filled
+in by an environment that actually has PHP.
+
+## What is NOT yet verified (do this next)
+
+None of the following has ever run:
+
+- `composer install` (composer.json is a hand-authored manifest; there is
+  **deliberately no `composer.lock`** - fabricating one with invented
+  package hashes would be worse than no lock file at all, since it would
+  look verified without being verified. Generate the real one yourself.)
+- `php artisan migrate` against a real PostgreSQL 18 instance
+- `vendor/bin/phpunit` / `composer test`
+- `composer pint:test` (code style) / `composer analyse` (Larastan)
+
+### How to actually verify it
+
+```bash
+cd apps/control-plane
+composer install
+cp .env.example .env
+php artisan key:generate
+# Create a local Postgres 18 database, then set SECRET_LOCAL_POSTGRES_DSN
+# in .env to point at it (see the comments in .env.example).
+php artisan migrate
+composer test
+composer pint:test
+composer analyse
+```
+
+Or simplest: push this branch to GitHub. `.github/workflows/backend.yml`
+does all of the above automatically against a disposable PostgreSQL 18
+service container and is the authoritative "CI is green from a clean
+checkout" signal `ROADMAP_V7.md` asks for.
+
+**If anything above fails**, the most likely causes, in order, are: (1) a
+version-constraint mismatch in `composer.json` now that real dependency
+resolution is happening (Laravel 13 / Sanctum's exact released API is past
+the knowledge available while authoring this), (2) a typo that
+`scripts/php_sanity_check.py` cannot detect because it doesn't parse full
+PHP grammar (only brace/heredoc balance and imports), or (3) a PostgreSQL
+version-specific SQL detail in the raw trigger migration. None of these are
+expected to be large; please open an issue/PR-comment with the exact error
+rather than silently patching around it, so the fix can be reviewed against
+the spec like everything else in this repository.
+
+## Deliberately deferred (not forgotten - out of Phase 0's stated scope)
+
+- The outbox **relay** worker (rows are written transactionally and proven
+  by test; nothing yet drains `outbox_messages` to Valkey).
+- `rule_packs` / `rule_pack_versions` / `threats` / `controls` /
+  `requirements` / `reviews` / `merge_conflicts` / `exports` tables - these
+  belong to Phases 2/3/4/5/6 respectively per `ROADMAP_V7.md`, and were not
+  pre-created empty in Phase 0 to avoid guessing at schema that hasn't been
+  designed yet.
+- Revision status transitions beyond the `DRAFT` default (`REVIEW` /
+  `APPROVED` / `SUPERSEDED` are modelled in the enum and the DB trigger
+  already permits `status` to change, but no command/endpoint exercises
+  this yet).
+- A production secret-provider adapter (only `secret://local/...` exists -
+  ADR 0007).
+- OpenTelemetry span/metric emission code (config plumbing for
+  `OTEL_EXPORTER_OTLP_ENDPOINT` exists; no instrumentation calls yet).
+- A true multi-connection concurrency test. The automated test suite
+  proves the *observable contract* (`base_revision_id` no longer matching
+  the head -> `409 REVISION_CONFLICT`, never a silent overwrite) via a
+  sequential two-client simulation, which is the standard, non-flaky way to
+  test this property without process-forking in CI. Actually proving the
+  underlying `SELECT ... FOR UPDATE` blocks a second *simultaneously live*
+  connection is a manual/load-test verification step, not an automated one.
+
+## Next phase
+
+Per `ROADMAP_V7.md`'s "one phase at a time" rule, Phase 1 (Canvas
+projection) should not begin until the verification steps above have
+actually been run against this code and any resulting fixes are in.
