@@ -38,9 +38,25 @@ return new class extends Migration
             $table->timestampTz('committed_at');
 
             $table->unique(['project_id', 'sequence_no']);
-            $table->foreign('parent_revision_id')->references('id')->on('architecture_revisions')->nullOnDelete();
             $table->index('content_hash');
             $table->index('status');
+        });
+
+        // Self-referencing foreign key added in a *separate* Schema::table()
+        // call, never inline in the Schema::create() above. On PostgreSQL,
+        // adding "references this same table" as part of the same
+        // create-table blueprint fails - confirmed by this exact migration
+        // failing with "there is no unique constraint matching given keys
+        // for referenced table" on its first real run (see
+        // docs/phase-0-exit-evidence.md "CI feedback - round 3"): the
+        // self-referencing ALTER TABLE ADD CONSTRAINT was compiled to run
+        // before Postgres considered the table's own primary key
+        // established. Once the table (and its primary key) fully exists
+        // as its own statement, adding the FK against it works exactly
+        // like the projects.head_revision_id -> architecture_revisions.id
+        // split in ..._000007_add_head_revision_foreign_key_to_projects_table.php.
+        Schema::table('architecture_revisions', function (Blueprint $table) {
+            $table->foreign('parent_revision_id')->references('id')->on('architecture_revisions')->nullOnDelete();
         });
 
         // Laravel's fluent Schema Builder has no Blueprint::check() method

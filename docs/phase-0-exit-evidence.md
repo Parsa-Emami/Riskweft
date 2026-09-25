@@ -239,3 +239,55 @@ Re-verified: `scripts/php_sanity_check.py` (clean), `scripts/validate_repo.py`
 first real test of all of them, including the immutability trigger
 migration, which is the piece of this phase with the least any-form-of
 verification behind it so far.
+
+## CI feedback — round 3
+
+`php artisan migrate:fresh` progressed one migration further this time
+(round 2's fix held: the CHECK constraint on `architecture_revisions`
+itself was never reached) and failed on the very next statement in the
+same migration:
+
+```
+SQLSTATE[42830]: Invalid foreign key: 7 ERROR: there is no unique
+constraint matching given keys for referenced table "architecture_revisions"
+(... alter table "architecture_revisions" add constraint
+"architecture_revisions_parent_revision_id_foreign" foreign key
+("parent_revision_id") references "architecture_revisions" ("id") ...)
+```
+
+**Root cause**: `parent_revision_id` is a *self-referencing* foreign key -
+`architecture_revisions` pointing at its own `id`. On PostgreSQL, adding a
+self-referencing foreign key as part of the *same* `Schema::create()`
+blueprint that also defines the primary key it points at fails this way:
+the ALTER TABLE that adds the constraint is compiled and executed before
+Postgres has finished establishing the table's own primary key as a
+constraint it can match a foreign key against. This is a documented,
+fairly common Laravel-on-PostgreSQL gotcha, confirmed against other
+developers' reports of the identical error and error code for the
+identical pattern (a nullable `parent`-style self-reference added inline).
+It did not surface for `projects.head_revision_id -> architecture_revisions.id`
+because that one was *already* split into its own migration
+(`..._000007_add_head_revision_foreign_key_to_projects_table.php`) for an
+unrelated reason (avoiding a circular forward reference between two
+different tables) - the self-referencing case within a single table needs
+the identical split, which it hadn't gotten.
+
+**Fix**: `parent_revision_id`'s foreign key moved out of the
+`Schema::create('architecture_revisions', ...)` closure into its own
+`Schema::table('architecture_revisions', ...)` call immediately after -
+same file, same migration, same `up()` method, just no longer inline. By
+the time that second call runs, the table (and its primary key) is fully,
+separately established. Every other migration was audited for the same
+pattern (a table referencing itself inside its own `Schema::create()`
+block, via either `->constrained()` or `->foreign()->references()->on()`)
+and none exists - `architecture_revisions` was the only self-referencing
+table in this phase's schema, so this is a complete fix, not a partial one
+awaiting the next failure.
+
+Re-verified: `scripts/php_sanity_check.py` (clean), `scripts/validate_repo.py`
+(clean), `scripts/verify-canonicalization.py` (9/9, unaffected), plus a new,
+purpose-built check (self-reference scan across every migration's
+`Schema::create()` block) confirming no other table has this issue.
+Migrations 5 through 12 - including the immutability trigger, still the
+least-verified piece of this phase - remain genuinely untested by real
+execution; the next CI run is still the first real look at them.
