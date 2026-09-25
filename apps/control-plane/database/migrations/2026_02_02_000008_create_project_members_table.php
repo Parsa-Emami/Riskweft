@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /** spec/04_AUTHORIZATION_MATRIX.md roles, scoped per project. */
@@ -19,8 +20,11 @@ return new class extends Migration
             $table->timestampTz('created_at')->useCurrent();
 
             $table->unique(['project_id', 'user_id']);
-            $table->check("role in ('viewer','modeler','reviewer','approver','workspace_admin')");
         });
+
+        // See 2026_02_02_000004_create_architecture_revisions_table.php's
+        // comment: Blueprint has no fluent check() method.
+        DB::statement("alter table project_members add constraint project_members_role_check check (role in ('viewer','modeler','reviewer','approver','workspace_admin'))");
     }
 
     public function down(): void

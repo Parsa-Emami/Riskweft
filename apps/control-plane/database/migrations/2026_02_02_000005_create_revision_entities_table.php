@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -29,8 +30,11 @@ return new class extends Migration
 
             $table->unique(['revision_id', 'entity_id']);
             $table->index(['revision_id', 'kind']);
-            $table->check("kind in ('component','trust_boundary','asset')");
         });
+
+        // See 2026_02_02_000004_create_architecture_revisions_table.php's
+        // comment: Blueprint has no fluent check() method.
+        DB::statement("alter table revision_entities add constraint revision_entities_kind_check check (kind in ('component','trust_boundary','asset'))");
     }
 
     public function down(): void

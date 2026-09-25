@@ -199,3 +199,43 @@ package releases:
   this sandbox, so this round's fixes are, like Phase 0 itself, corrected
   by research and static review rather than by a green run - the next
   actual CI run is still the first real confirmation.
+
+## CI feedback — round 2
+
+`composer install` passed this time (round 1's fix held), and
+`php artisan migrate:fresh` actually ran against a real PostgreSQL 18
+service container for the first time - and got through 3 of 12 migrations
+before failing:
+
+```
+BadMethodCallException: Method Illuminate\Database\Schema\Blueprint::check does not exist.
+```
+
+**This one is not a version-drift issue like round 1 - it's a plain
+authoring mistake.** Laravel's fluent Schema Builder has never had a
+`Blueprint::check()` method, at any version; raw CHECK constraints have
+always required dropping to `DB::statement()`. Five call sites across four
+migrations (`architecture_revisions`, `revision_entities`,
+`revision_relationships` (two constraints), `project_members`) used the
+nonexistent fluent method. All five are fixed the same way: the
+`Schema::create()` closure keeps every column/index/foreign-key
+definition, and each CHECK constraint moves to its own
+`DB::statement("alter table ... add constraint ... check (...)")` call
+immediately after the closure, inside the same `up()`. `down()` is
+unchanged (`dropIfExists` already drops the constraints with the table).
+
+This is exactly the category of bug `scripts/php_sanity_check.py` cannot
+catch (it checks brace balance and imports, not whether a called method
+actually exists on a class) - real execution against real PostgreSQL is
+what found it, on the very first migration that used the broken pattern.
+The other three tables that also carry CHECK constraints in
+`spec/05_DATABASE_SCHEMA_BLUEPRINT.md` intent were never reached by this
+run, but used the identical wrong pattern and are fixed pre-emptively
+rather than waiting for another failing run to find each one in turn.
+
+Re-verified: `scripts/php_sanity_check.py` (clean), `scripts/validate_repo.py`
+(clean), `scripts/verify-canonicalization.py` (9/9, unaffected). Migrations
+5 through 12 have still never actually executed - the next CI run is the
+first real test of all of them, including the immutability trigger
+migration, which is the piece of this phase with the least any-form-of
+verification behind it so far.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -40,8 +41,14 @@ return new class extends Migration
             $table->foreign('parent_revision_id')->references('id')->on('architecture_revisions')->nullOnDelete();
             $table->index('content_hash');
             $table->index('status');
-            $table->check("status in ('DRAFT','REVIEW','APPROVED','SUPERSEDED')");
         });
+
+        // Laravel's fluent Schema Builder has no Blueprint::check() method
+        // (confirmed by this exact migration failing with
+        // BadMethodCallException on its first real run - see
+        // docs/phase-0-exit-evidence.md "CI feedback - round 2"); CHECK
+        // constraints are added via raw SQL after the table exists.
+        DB::statement("alter table architecture_revisions add constraint architecture_revisions_status_check check (status in ('DRAFT','REVIEW','APPROVED','SUPERSEDED'))");
     }
 
     public function down(): void

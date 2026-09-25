@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -30,9 +31,12 @@ return new class extends Migration
 
             $table->unique(['revision_id', 'relationship_id']);
             $table->index(['revision_id', 'kind']);
-            $table->check("kind in ('data_flow','trust_boundary_membership')");
-            $table->check('source_entity_row_id <> target_entity_row_id');
         });
+
+        // See 2026_02_02_000004_create_architecture_revisions_table.php's
+        // comment: Blueprint has no fluent check() method.
+        DB::statement("alter table revision_relationships add constraint revision_relationships_kind_check check (kind in ('data_flow','trust_boundary_membership'))");
+        DB::statement('alter table revision_relationships add constraint revision_relationships_no_self_loop_check check (source_entity_row_id <> target_entity_row_id)');
     }
 
     public function down(): void
