@@ -7,6 +7,7 @@ namespace Tests\Feature\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 /**
@@ -48,9 +49,9 @@ final class SchemaMigrationTest extends TestCase
     }
 
     /**
-     * @dataProvider tableColumnProvider
      * @param  list<string>  $expectedColumns
      */
+    #[DataProvider('tableColumnProvider')]
     public function test_authoritative_tables_and_columns_exist(string $table, array $expectedColumns): void
     {
         self::assertTrue(Schema::hasTable($table), "expected table [{$table}] to exist");

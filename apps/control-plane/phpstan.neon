@@ -1,0 +1,21 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+
+    # Started at a moderate level deliberately: this configuration itself
+    # has never been run (see ../../docs/phase-0-exit-evidence.md - no PHP
+    # runtime was available while authoring this repository). Level 5 is a
+    # reasonable first-pass bar for carefully-typed, `declare(strict_types=1)`
+    # code; ratchet it up (PHPStan's own recommended adoption path is
+    # gradual, not all-at-once) once a real report from this exact config
+    # has actually been reviewed, rather than guessing at a stricter level
+    # blind.
+    level: 5
+
+    tmpDir: build/phpstan
+
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false

@@ -21,6 +21,12 @@ return [
     'middleware' => [
         'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
         'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
-        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        // Laravel 13 renamed VerifyCsrfToken -> PreventRequestForgery (adds
+        // Sec-Fetch-Site origin verification on top of token validation).
+        // Dead code in practice for this app - 'stateful' => [] above means
+        // Sanctum never applies its stateful/cookie CSRF-protecting
+        // middleware group - kept current anyway rather than referencing
+        // the deprecated alias.
+        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
     ],
 ];

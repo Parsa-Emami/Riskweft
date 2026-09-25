@@ -144,3 +144,58 @@ the spec like everything else in this repository.
 Per `ROADMAP_V7.md`'s "one phase at a time" rule, Phase 1 (Canvas
 projection) should not begin until the verification steps above have
 actually been run against this code and any resulting fixes are in.
+
+## CI feedback — round 1
+
+The first real `.github/workflows/backend.yml` run (the first time this
+code was ever actually executed as PHP) failed at `composer install`,
+exactly the kind of gap the "What is NOT yet verified" section above
+warned about. Recorded here per `ROADMAP_V7.md` "status claims must be
+evidence-backed" - fixes were driven by current web research, not
+guessing, since this assistant's reliable knowledge predates these
+package releases:
+
+- **Root cause**: `larastan/larastan: ^2.9` cannot resolve against
+  `laravel/framework: ^13.0` - larastan 2.x's latest release only supports
+  `illuminate/support` up to `^11.51`, and `laravel/framework` 13.x bundles
+  (`replaces`) `illuminate/support` at `v13.x`. larastan 3.x is the line
+  that added Laravel 13 support (`illuminate/support: ^11.44.2 || ^12.4.1 ||
+  ^13`), which in turn requires `phpstan/phpstan: ^2.2.14`.
+- **Fixed in `composer.json`**: `larastan/larastan` `^2.9` → `^3.0`;
+  `phpstan/phpstan` `^1.11` → `^2.2`; `phpunit/phpunit` `^11.0` → `^12.0`;
+  `laravel/tinker` `^2.9` → `^3.0` (Laravel 13's own upgrade guide lists
+  this exact set as its "High Impact: updating dependencies" item). Added
+  `laravel/pail` as a dev dependency to match the current default skeleton.
+- **Added `phpstan.neon`**: this file did not exist at all, which would
+  have failed the very next CI step (`composer analyse`) even after the
+  resolution fix. Includes `larastan/larastan`'s extension, starts at
+  level 5 deliberately (see the file's own comment - ratchet up once a
+  real report has been reviewed, not blind).
+- **Fixed `tests/Feature/Schema/SchemaMigrationTest.php`**: the docblock
+  `@dataProvider` annotation is removed in PHPUnit 12 (deprecated since 11,
+  annotations for metadata removed entirely in 12) - converted to the
+  `#[DataProvider('...')]` PHP attribute.
+- **Precautionary, not CI-blocking, but fixed while in the neighbourhood**
+  (researched against Laravel 13's actual documented breaking-change list):
+  - `config/sanctum.php`'s CSRF middleware entry now references
+    `PreventRequestForgery` (13's rename of `VerifyCsrfToken`) instead of
+    the deprecated alias. Dead code either way for this app -
+    `'stateful' => []` means Sanctum never applies it - but kept current.
+  - `config/cache.php` gained `'serializable_classes' => false`, matching
+    13's new deserialization-hardening default (this app never caches PHP
+    objects, so this is a no-op safety net, not a fix for an active bug).
+  - Added the four standard Laravel config files that were missing
+    entirely (`session.php`, `filesystems.php`, `mail.php`,
+    `services.php`) - none of Phase 0's routes exercise them, but their
+    absence meant `config('session.*')` etc. would have resolved to `null`
+    instead of real values if any framework/package boot path touched them,
+    which is exactly the kind of thing that surfaces as a confusing crash
+    only in a real environment, not in the static checks this sandbox could
+    run.
+- **Re-verified after fixing**: `scripts/php_sanity_check.py` (104 files,
+  clean), `scripts/validate_repo.py` (clean), `scripts/verify-canonicalization.py`
+  (9/9, unaffected - these fixes were all toolchain/config, not domain logic).
+  `composer install`/`phpunit`/`pint`/`phpstan` still cannot be executed in
+  this sandbox, so this round's fixes are, like Phase 0 itself, corrected
+  by research and static review rather than by a green run - the next
+  actual CI run is still the first real confirmation.
