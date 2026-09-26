@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Third-party API credentials for services RiskWeft integrates with. Empty
 // in Phase 0 - no third-party integration exists yet - but the file exists
 // so config('services.*') resolves to real values (an empty array) rather

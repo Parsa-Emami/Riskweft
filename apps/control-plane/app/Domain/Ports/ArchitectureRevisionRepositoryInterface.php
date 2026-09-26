@@ -23,9 +23,11 @@ interface ArchitectureRevisionRepositoryInterface
      *
      * $expectedBaseRevisionId is null only for a project's first revision.
      *
-     * @throws StaleRevisionWriteException the project's head moved since
-     *         the caller last read it - implementation-start/failure-catalog.json
-     *         "stale revision write".
+     * StaleRevisionWriteException is thrown when the project's head moved
+     * since the caller last read it - implementation-start/failure-catalog.json
+     * "stale revision write".
+     *
+     * @throws StaleRevisionWriteException
      * @throws ProjectNotFoundException
      */
     public function commit(

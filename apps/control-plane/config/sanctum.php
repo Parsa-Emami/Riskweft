@@ -1,6 +1,10 @@
 <?php
 
-use Laravel\Sanctum\Sanctum;
+declare(strict_types=1);
+
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Laravel\Sanctum\Http\Middleware\AuthenticateSession;
 
 return [
     // Stateful/cookie-session guards are not used: RiskWeft's API is a
@@ -19,14 +23,14 @@ return [
     'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
 
     'middleware' => [
-        'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
-        'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
+        'authenticate_session' => AuthenticateSession::class,
+        'encrypt_cookies' => EncryptCookies::class,
         // Laravel 13 renamed VerifyCsrfToken -> PreventRequestForgery (adds
         // Sec-Fetch-Site origin verification on top of token validation).
         // Dead code in practice for this app - 'stateful' => [] above means
         // Sanctum never applies its stateful/cookie CSRF-protecting
         // middleware group - kept current anyway rather than referencing
         // the deprecated alias.
-        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+        'validate_csrf_token' => PreventRequestForgery::class,
     ],
 ];

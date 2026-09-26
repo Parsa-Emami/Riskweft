@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // No endpoint in Phase 0 sends mail. This exists so config('mail.*')
     // resolves to real values if any framework/package boot path reads it;

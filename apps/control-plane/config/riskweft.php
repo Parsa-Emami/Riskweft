@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // RiskWeft business configuration. Every key here is sourced from an
 // environment variable documented in ../../spec/11_CONFIGURATION_REFERENCE.md
 // and validated by ../../contracts/config.schema.json - see

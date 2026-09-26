@@ -24,7 +24,7 @@ final class StaleRevisionWriteException extends DomainException
     ) {
         parent::__construct(
             "Stale base revision for project [{$projectId}]: expected head [".
-            ($expectedBaseRevisionId ?? 'null')."], actual head [".($actualHeadRevisionId ?? 'null').'].'
+            ($expectedBaseRevisionId ?? 'null').'], actual head ['.($actualHeadRevisionId ?? 'null').'].'
         );
     }
 

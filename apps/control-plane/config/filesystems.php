@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // Storage::disk() is not used anywhere in Phase 0 (no file/export
     // artifacts yet - that is Phase 5/6 scope per ROADMAP_V7.md). This

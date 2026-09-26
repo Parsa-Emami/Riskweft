@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Providers\AppServiceProvider;
+use App\Providers\DomainServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\DomainServiceProvider::class,
+    AppServiceProvider::class,
+    DomainServiceProvider::class,
 ];

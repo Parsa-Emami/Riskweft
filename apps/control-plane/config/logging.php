@@ -1,5 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
+use Monolog\Formatter\JsonFormatter;
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
@@ -25,8 +30,8 @@ return [
         'structured' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'info'),
-            'handler' => Monolog\Handler\StreamHandler::class,
-            'formatter' => Monolog\Formatter\JsonFormatter::class,
+            'handler' => StreamHandler::class,
+            'formatter' => JsonFormatter::class,
             'with' => ['stream' => 'php://stdout'],
             'processors' => [PsrLogMessageProcessor::class],
         ],
@@ -34,14 +39,14 @@ return [
         'stderr' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'info'),
-            'handler' => Monolog\Handler\StreamHandler::class,
-            'formatter' => Monolog\Formatter\JsonFormatter::class,
+            'handler' => StreamHandler::class,
+            'formatter' => JsonFormatter::class,
             'with' => ['stream' => 'php://stderr'],
         ],
 
         'null' => [
             'driver' => 'monolog',
-            'handler' => Monolog\Handler\NullHandler::class,
+            'handler' => NullHandler::class,
         ],
     ],
 ];

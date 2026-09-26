@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // Never actually engaged: no route in routes/api.php uses the 'web'
     // middleware group or session-backed auth (contracts/openapi.v1.yaml

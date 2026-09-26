@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'paths' => ['api/*', 'up'],
     'allowed_methods' => ['GET', 'POST', 'PATCH', 'DELETE'],

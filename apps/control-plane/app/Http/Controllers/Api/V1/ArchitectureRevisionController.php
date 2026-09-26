@@ -15,6 +15,7 @@ use App\Domain\Ports\ProjectRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommitArchitectureRevisionRequest;
 use App\Http\Resources\ArchitectureRevisionResource;
+use App\Http\Support\ApiResponse;
 use App\Infrastructure\Persistence\Eloquent\Models\UserModel;
 use App\Policies\ProjectPolicy;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -67,7 +68,7 @@ final class ArchitectureRevisionController extends Controller
 
         $replay = $this->idempotency->reserveOrReplay($idempotencyKey, $user->getKey(), self::COMMIT_ROUTE, $fingerprint);
         if ($replay !== null) {
-            return \App\Http\Support\ApiResponse::accepted($requestId, 'committed', $replay->resourceId, null, $replay->responseBody);
+            return ApiResponse::accepted($requestId, 'committed', $replay->resourceId, null, $replay->responseBody);
         }
 
         $baseRevisionId = $validated['base_revision_id'] === ArchitectureRevision::GENESIS_BASE_REVISION_ID
@@ -86,7 +87,7 @@ final class ArchitectureRevisionController extends Controller
 
         $this->idempotency->complete($idempotencyKey, $user->getKey(), self::COMMIT_ROUTE, 202, $data, $revision->id);
 
-        return \App\Http\Support\ApiResponse::accepted($requestId, 'committed', $revision->id, $revision->sequenceNo, $data);
+        return ApiResponse::accepted($requestId, 'committed', $revision->id, $revision->sequenceNo, $data);
     }
 
     public function show(Request $request, string $revision): JsonResponse
@@ -106,6 +107,6 @@ final class ArchitectureRevisionController extends Controller
 
         $data = (new ArchitectureRevisionResource($result))->resolve();
 
-        return \App\Http\Support\ApiResponse::ok($requestId, 'ok', $result->id, $result->sequenceNo, $data);
+        return ApiResponse::ok($requestId, 'ok', $result->id, $result->sequenceNo, $data);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Infrastructure\Config\SecretReferenceResolver;
 
 $pgsqlDsn = SecretReferenceResolver::resolve(env('DATABASE_DSN_REF'));

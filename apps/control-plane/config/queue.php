@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // Phase 0 exposes no background workers of its own; the transactional
     // outbox row is written synchronously in the same DB transaction as the

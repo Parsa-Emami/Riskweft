@@ -291,3 +291,80 @@ purpose-built check (self-reference scan across every migration's
 Migrations 5 through 12 - including the immutability trigger, still the
 least-verified piece of this phase - remain genuinely untested by real
 execution; the next CI run is still the first real look at them.
+
+## CI feedback — round 4
+
+`php artisan migrate:fresh` passed **completely** this time - all 12
+migrations, including the immutability trigger (the least-verified piece
+of this phase up to this point) - genuinely ran and succeeded against real
+PostgreSQL 18. This is the first fully-green schema in this phase's
+history. The run then reached `composer pint:test` (code style) and failed
+with 27 style violations across 27 of 104 files.
+
+This round is different in kind from rounds 1-3: every issue is cosmetic
+(formatting only, zero behavioural risk), and about half were resolved
+with full confidence by fetching Laravel Pint's actual preset source
+(`laravel/pint` `resources/presets/laravel.php`) and, for two ambiguous
+rule names, PHP-CS-Fixer's own rule documentation with concrete
+before/after examples - not guessed:
+
+- **`declare_strict_types` + `blank_line_after_opening_tag`** (18 files:
+  every file under `bootstrap/`, `config/`, `public/`, `routes/`) - these
+  framework/config files never got the `<?php\n\ndeclare(strict_types=1);\n\n`
+  header this codebase's own `app/` files consistently use. Applied
+  uniformly.
+- **`fully_qualified_strict_types`** (7 files) - inline
+  `Some\Fully\Qualified\ClassName` references (both with and without a
+  leading `\`) converted to a `use` import + short name, matching the
+  preset's `'fully_qualified_strict_types' => ['import_symbols' => true, ...]`
+  config. Also removed one now-provably-unused `use Laravel\Sanctum\Sanctum;`
+  found while fixing `config/sanctum.php`.
+- **`phpdoc_align`** (2 files) - multi-line `@throws` descriptions with a
+  hand-wrapped, fixed-width continuation indent were restructured: the
+  explanation moved into the docblock's prose, leaving `@throws
+  ExceptionType` with no trailing description on either file. Confirmed
+  against the preset's `'phpdoc_align' => ['align' => 'left', ...]`.
+- **`ordered_imports`**: found and fixed one real case
+  (`Illuminate\Auth\AuthenticationException` was listed before
+  `Illuminate\Auth\Access\AuthorizationException` - wrong under
+  alphabetical/`alpha` sort) in `ApiExceptionRenderer.php`, then wrote a
+  script to check every import block in the whole tree under both
+  case-sensitive and case-insensitive comparison - no others exist.
+- **`integer_literal_case`** (`Uuid.php`) - confirmed via PHP-CS-Fixer's own
+  documented example (`0Xff` -> `0xFF`: lowercase hex *prefix*, uppercase hex
+  *digits*) that `0x0f`/`0x3f` needed to become `0x0F`/`0x3F`.
+- **`single_quote`**-class issue (`StaleRevisionWriteException.php`,
+  reported truncated as `single_...`) - found by writing a script that
+  scans every double-quoted string literal in the tree for one with no
+  interpolation, no embedded single quote, and no meaningful escape
+  sequence (all of which legitimately exempt a string from this rule);
+  exactly one true positive turned up and was converted to single quotes.
+
+**Two items were investigated at length but left unchanged, deliberately,
+rather than guessed at further:**
+
+- `Uuid.php`'s `braces_position`/`single_line_empty_body`-class flag on
+  its one-line empty constructor (`private function __construct(...) {}`).
+  PHP-CS-Fixer's own documented example for `single_line_empty_body`
+  confirms this exact shape (`) {}` - signature, single space, `{}`) *is*
+  the target format, which is what this file already has.
+- `SecretReferenceResolver.php`'s `unary_operator_spac...` flag. The
+  Laravel preset separately enables `not_operator_with_successor_space`
+  (confirmed present in the fetched preset source), which specifically
+  governs `!` spacing and wants a trailing space - matching this file's
+  existing `! str_starts_with(...)` / `! isset(...)`. No other unary
+  operator (`+`, `-`, `++`, `--`, `~`) appears anywhere in the file.
+
+For both, the current code matches this assistant's best researched
+understanding of the target format. If either is still flagged on the next
+run, that is the clearest sign yet that hand-verifying Pint's exact
+byte-level output without ever running Pint has reached its limit - the
+reliable fix at that point is `vendor/bin/pint` (write mode, not
+`--test`) run once, locally or as a throwaway CI step, which is now a
+realistic, low-cost option since `composer install` and every migration
+have both been proven to work in the real CI environment.
+
+Re-verified: `scripts/php_sanity_check.py` (clean), `scripts/validate_repo.py`
+(clean), `scripts/verify-canonicalization.py` (9/9, unaffected). PHPUnit,
+Pint (for real, not by hand) and Larastan have still never executed - all
+three remain the next real unknowns.

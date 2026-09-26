@@ -20,9 +20,11 @@ interface IdempotencyStoreInterface
      *    duplicate fails fast (429/409) instead of double-executing the
      *    command; the client's normal retry behaviour resolves this.
      *
-     * @throws IdempotencyKeyConflictException same key+principal+route
-     *         reused for a request with a different fingerprint, or a
-     *         concurrent duplicate is still in flight.
+     * IdempotencyKeyConflictException is also thrown when the same
+     * key+principal+route is reused for a request with a different
+     * fingerprint.
+     *
+     * @throws IdempotencyKeyConflictException
      */
     public function reserveOrReplay(string $key, ?string $principalId, string $route, string $requestFingerprint): ?IdempotentResult;
 

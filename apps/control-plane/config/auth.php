@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Infrastructure\Persistence\Eloquent\Models\UserModel;
+
 return [
     'defaults' => [
         'guard' => 'web',
@@ -16,7 +20,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Infrastructure\Persistence\Eloquent\Models\UserModel::class,
+            'model' => UserModel::class,
         ],
     ],
 
