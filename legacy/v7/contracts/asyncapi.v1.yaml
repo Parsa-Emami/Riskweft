@@ -1,0 +1,169 @@
+asyncapi: 3.1.0
+id: urn:parsa-security:riskweft:events:v1
+info:
+  title: RiskWeft Events
+  version: 1.0.0
+  description: Canonical application event contract. Delivery is at-least-once; consumers must be idempotent and deduplicate by event id.
+defaultContentType: application/json
+channels:
+  event_architecture_revision_committed_v1:
+    address: architecture.revision_committed.v1
+    messages:
+      ArchitectureRevisionCommittedV1Message:
+        $ref: '#/components/messages/ArchitectureRevisionCommittedV1Message'
+  event_ruleset_evaluation_completed_v1:
+    address: ruleset.evaluation_completed.v1
+    messages:
+      RulesetEvaluationCompletedV1Message:
+        $ref: '#/components/messages/RulesetEvaluationCompletedV1Message'
+  event_threat_created_v1:
+    address: threat.created.v1
+    messages:
+      ThreatCreatedV1Message:
+        $ref: '#/components/messages/ThreatCreatedV1Message'
+  event_threat_status_changed_v1:
+    address: threat.status_changed.v1
+    messages:
+      ThreatStatusChangedV1Message:
+        $ref: '#/components/messages/ThreatStatusChangedV1Message'
+  event_review_requested_v1:
+    address: review.requested.v1
+    messages:
+      ReviewRequestedV1Message:
+        $ref: '#/components/messages/ReviewRequestedV1Message'
+  event_review_approved_v1:
+    address: review.approved.v1
+    messages:
+      ReviewApprovedV1Message:
+        $ref: '#/components/messages/ReviewApprovedV1Message'
+  event_merge_conflict_created_v1:
+    address: merge.conflict_created.v1
+    messages:
+      MergeConflictCreatedV1Message:
+        $ref: '#/components/messages/MergeConflictCreatedV1Message'
+operations:
+  send_architecture_revision_committed_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_architecture_revision_committed_v1'
+    messages:
+    - $ref: '#/channels/event_architecture_revision_committed_v1/messages/ArchitectureRevisionCommittedV1Message'
+  send_ruleset_evaluation_completed_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_ruleset_evaluation_completed_v1'
+    messages:
+    - $ref: '#/channels/event_ruleset_evaluation_completed_v1/messages/RulesetEvaluationCompletedV1Message'
+  send_threat_created_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_threat_created_v1'
+    messages:
+    - $ref: '#/channels/event_threat_created_v1/messages/ThreatCreatedV1Message'
+  send_threat_status_changed_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_threat_status_changed_v1'
+    messages:
+    - $ref: '#/channels/event_threat_status_changed_v1/messages/ThreatStatusChangedV1Message'
+  send_review_requested_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_review_requested_v1'
+    messages:
+    - $ref: '#/channels/event_review_requested_v1/messages/ReviewRequestedV1Message'
+  send_review_approved_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_review_approved_v1'
+    messages:
+    - $ref: '#/channels/event_review_approved_v1/messages/ReviewApprovedV1Message'
+  send_merge_conflict_created_v1:
+    action: send
+    channel:
+      $ref: '#/channels/event_merge_conflict_created_v1'
+    messages:
+    - $ref: '#/channels/event_merge_conflict_created_v1/messages/MergeConflictCreatedV1Message'
+components:
+  messages:
+    ArchitectureRevisionCommittedV1Message:
+      name: architecture.revision_committed.v1
+      title: architecture.revision_committed.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+    RulesetEvaluationCompletedV1Message:
+      name: ruleset.evaluation_completed.v1
+      title: ruleset.evaluation_completed.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+    ThreatCreatedV1Message:
+      name: threat.created.v1
+      title: threat.created.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+    ThreatStatusChangedV1Message:
+      name: threat.status_changed.v1
+      title: threat.status_changed.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+    ReviewRequestedV1Message:
+      name: review.requested.v1
+      title: review.requested.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+    ReviewApprovedV1Message:
+      name: review.approved.v1
+      title: review.approved.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+    MergeConflictCreatedV1Message:
+      name: merge.conflict_created.v1
+      title: merge.conflict_created.v1
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+  schemas:
+    EventEnvelope:
+      type: object
+      additionalProperties: false
+      required:
+      - specversion
+      - id
+      - source
+      - type
+      - time
+      - subject
+      - data
+      properties:
+        specversion:
+          type: string
+          const: '1.0'
+        id:
+          type: string
+          minLength: 16
+        source:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - architecture.revision_committed.v1
+          - ruleset.evaluation_completed.v1
+          - threat.created.v1
+          - threat.status_changed.v1
+          - review.requested.v1
+          - review.approved.v1
+          - merge.conflict_created.v1
+        time:
+          type: string
+          format: date-time
+        subject:
+          type: string
+        traceparent:
+          type:
+          - string
+          - 'null'
+        datacontenttype:
+          type: string
+          const: application/json
+        data:
+          type: object

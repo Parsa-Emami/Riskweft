@@ -1,0 +1,26 @@
+{
+  "project": "RiskWeft",
+  "version": "v1-reference",
+  "risk": "HIGH",
+  "runtime": [
+    "Laravel 13",
+    "React/TypeScript canvas",
+    "PostgreSQL 18",
+    "Valkey",
+    "OpenTelemetry"
+  ],
+  "final_decisions": [
+    "Canonical truth is an immutable ArchitectureRevision document in PostgreSQL JSONB with stable UUIDs; the canvas is only a projection.",
+    "Rule packs are YAML/JSON declarative documents compiled to a deterministic RuleIR implemented in the Laravel domain layer; arbitrary code is prohibited.",
+    "Optimistic concurrency is v1 collaboration. CRDT/live co-editing is explicitly post-v1 and cannot redefine the canonical model.",
+    "Semantic diff compares typed entities/relationships, not raw JSON text. Merge conflicts are explicit domain objects.",
+    "Threats store rule-pack ID/version, matched facts, input revision hash and mitigation provenance.",
+    "CycloneDX TM-BOM / Threat Dragon / other threat-model formats are import-export adapters only. The internal schema never depends on unfinished external semantics.",
+    "STRIDE is bundled as the reference open rule pack; additional methodologies are plugin packs behind the same RuleIR."
+  ],
+  "data_ownership": {
+    "PostgreSQL": "canonical revisions, rule packs, threats, controls, reviews",
+    "Canvas state": "derived projection only",
+    "ObjectStore": "exports/import originals and reports"
+  }
+}

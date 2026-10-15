@@ -1,0 +1,26 @@
+{
+  "repository": "Parsa-Emami/Riskweft",
+  "reviewed_commit": "beddfb8e26f5ba3980a35df137927759812f4bec",
+  "existing_file_count": 203,
+  "existing_runtime": "Laravel API at apps/control-plane",
+  "protected_files_sha256": {
+    ".env.example": "a1756c0de57a1738d1c8f179bde2038f68e7e7547080463b2ac69945965f3e51",
+    "apps/control-plane/.env.example": "3f82fd52934ebfc24327ede2146b738b2483f3c7b31c19085192c6c2dbe9a2ce",
+    "apps/control-plane/database/migrations/2026_02_02_000001_create_users_table.php": "90af1706b791ba0f55cb1ee6a12b34261972245a6bb7910a9b4e2dfb00059ac5",
+    "apps/control-plane/database/migrations/2026_02_02_000002_create_personal_access_tokens_table.php": "00e83a9b749642eea9d8c4d12bee37af0c71946d9f8640ca4bd899bca94d7bc3",
+    "apps/control-plane/database/migrations/2026_02_02_000003_create_projects_table.php": "dcf399a1085aefebec18c3cdc0d3aa9c81b86a228d4856c4c92478c861f9d619",
+    "apps/control-plane/database/migrations/2026_02_02_000004_create_architecture_revisions_table.php": "c3dc299dadd26a743f60d3574035975eb94b77fe710ae15aed5e8935ca89b1f2",
+    "apps/control-plane/database/migrations/2026_02_02_000005_create_revision_entities_table.php": "6ff5917dd3423eabe1e3d9f898dfd98fc018345f0e7b569d95499d2c1355585d",
+    "apps/control-plane/database/migrations/2026_02_02_000006_create_revision_relationships_table.php": "7cb7d64e09e512d596f2f259a70a626d02e207ab03974af9f3ce27aedcb7c331",
+    "apps/control-plane/database/migrations/2026_02_02_000007_add_head_revision_foreign_key_to_projects_table.php": "544c0541d78e499b03ba68666694da52ac946039a25d4bb4dfacb3c5b82ef9b6",
+    "apps/control-plane/database/migrations/2026_02_02_000008_create_project_members_table.php": "206ff59f112fb5495e327b161b9a7f6f216398f6044d48e1a47d116c889973f2",
+    "apps/control-plane/database/migrations/2026_02_02_000009_create_outbox_messages_table.php": "787920498aba39d7ebd1555d8aa3d00caa40b4f50279c214018314678e302011",
+    "apps/control-plane/database/migrations/2026_02_02_000010_create_audit_events_table.php": "83f099a879dec291944de5891621f65f383317ecd0ce67404a474bfc5c6f9da8",
+    "apps/control-plane/database/migrations/2026_02_02_000011_create_idempotency_keys_table.php": "699245a39669bc573ac68a96a39fdbd09ccdfbb3f3a6d5a4b915cdc0a87526a4",
+    "apps/control-plane/database/migrations/2026_02_02_000012_add_immutability_guard_to_architecture_revisions.php": "c2bf5d869d3b5741f0c0fd5bb5f899f99f43f33d9d0111e2f40ec17b219fe8be"
+  },
+  "skipped_input_archival_config_paths": [
+    "legacy/v7/.env.example"
+  ],
+  "preservation": "All existing protected files remain at their original paths with identical bytes. Supplied archival env duplicates were omitted to avoid creating extra config files."
+}

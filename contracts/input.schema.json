@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:parsa:riskweft:input:0",
+  "title": "architecture-revision planning draft",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "revision_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "components": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "type": "object"
+      }
+    },
+    "flows": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "type": "object"
+      }
+    },
+    "trust_boundaries": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "type": "object"
+      }
+    },
+    "rule_pack_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "required": [
+    "project_id",
+    "revision_id",
+    "components",
+    "flows",
+    "trust_boundaries",
+    "rule_pack_digest"
+  ]
+}

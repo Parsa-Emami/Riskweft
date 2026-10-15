@@ -1,0 +1,16 @@
+{
+  "project": "RiskWeft",
+  "envelope": "CloudEvents-compatible 1.0 profile",
+  "delivery": "at-least-once",
+  "ordering": "not globally guaranteed; per-aggregate sequencing when documented",
+  "deduplication": "required by event id",
+  "types": [
+    "architecture.revision_committed.v1",
+    "ruleset.evaluation_completed.v1",
+    "threat.created.v1",
+    "threat.status_changed.v1",
+    "review.requested.v1",
+    "review.approved.v1",
+    "merge.conflict_created.v1"
+  ]
+}

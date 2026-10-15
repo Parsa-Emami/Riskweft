@@ -1,0 +1,99 @@
+{
+  "folder": "02-riskweft",
+  "name": "RiskWeft",
+  "rank": 1,
+  "score": 8.3,
+  "verdict": "بهترین شروع؛ محصول را برای تیم کوچک و مستندات داخل Git محدود کن.",
+  "user": "توسعه‌دهنده، تیم کوچک AppSec و مشاور معماری",
+  "pain": "مدل تهدید بعد از تغییر معماری قدیمی می‌شود و دلیل هر تهدید روشن نیست",
+  "value": "مدل تهدید قابل‌حمل با ارزیابی deterministic و diff معنایی",
+  "wedge": "مدل تهدید به صورت فایل داخل repository؛ توضیح اینکه تغییر یک flow چه تهدیدی اضافه کرد",
+  "alternatives": "OWASP Threat Dragon و مدل‌سازی دستی",
+  "source_ids": [
+    "threatdragon"
+  ],
+  "mvp": [
+    "PWA روی دامنه با پردازش داخل مرورگر",
+    "component/flow/boundary editor و نمای جدولی",
+    "STRIDE قواعد نسخه‌دار با توضیح",
+    "JSON import/export، revision diff و گزارش HTML"
+  ],
+  "later": [
+    "اشتراک real-time و CRDT",
+    "همگام‌سازی GitHub با OAuth",
+    "LLM پیشنهاددهنده",
+    "حساب سازمانی و billing"
+  ],
+  "stack": [
+    "TypeScript domain engine",
+    "React UI",
+    "Web Worker evaluation",
+    "PWA static hosting"
+  ],
+  "mode": "browser-local-web",
+  "stores": {
+    "IndexedDB": "local drafts and revision history; export is user-controlled recovery",
+    "Portable JSON": "canonical architecture, rule versions and review history",
+    "Server": "static assets only; no project data upload by default"
+  },
+  "removed": [
+    "Laravel API",
+    "PostgreSQL",
+    "Valkey",
+    "mandatory OTel collector"
+  ],
+  "limits": {
+    "components": 200,
+    "flows": 500,
+    "import_max_mib": 10,
+    "rule_deadline_seconds": 5
+  },
+  "hardware": "اجرای عمومی static hosting؛ هدف مرورگر با 4 GiB RAM. هیچ DB سرور لازم نیست.",
+  "weeks": "4–7 هفته برای MVP شخصی",
+  "risks": [
+    "قواعد STRIDE اثبات امنیت کامل نیستند",
+    "پاک‌کردن دادهٔ مرورگر یا تغییر origin می‌تواند draft را حذف کند",
+    "دادهٔ معماری حساس است؛ telemetry محتوا نباید ارسال شود"
+  ],
+  "uat": [
+    "مدل API با یک trust boundary بساز و تهدید را همراه rule ID و facts ببین",
+    "همان فایل و rule pack را دوباره ارزیابی کن؛ hash و findings برابر باشند",
+    "JSON export را در مرورگر جدید وارد کن؛ داده، review و diff حفظ شوند"
+  ],
+  "domain": {
+    "primary": "architecture-revision",
+    "fields": {
+      "project_id": "id",
+      "revision_id": "id",
+      "components": "array",
+      "flows": "array",
+      "trust_boundaries": "array",
+      "rule_pack_digest": "hash"
+    },
+    "invariants": [
+      "Canvas is a projection",
+      "Stable IDs and semantic normalization",
+      "Threats retain matched facts and revision provenance"
+    ]
+  },
+  "version": "0.0.0",
+  "status": "WEB_FOUNDATION",
+  "source_implemented": true,
+  "market_validation": "UNVALIDATED",
+  "assumption": "Browser application first; optional CLI/worker remains an engine adapter. Web foundation does not satisfy domain release gates.",
+  "engine_implemented": false,
+  "previous_engine_mode": "browser-local",
+  "web_application": {
+    "status": "foundation_implemented",
+    "deployment_profile": "browser-local-web",
+    "frontend": "React + TypeScript + Vite",
+    "web_runtime": "Node.js static shell; no engine proxy",
+    "default_engine_enabled": false,
+    "preview_storage": "tab memory only",
+    "offline_supported": false,
+    "engine_status": "existing_backend_unverified",
+    "source": "apps/web/src/main.tsx",
+    "existing_backend": "apps/control-plane"
+  },
+  "web_version": "0.0.1"
+}

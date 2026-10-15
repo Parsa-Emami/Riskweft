@@ -1,0 +1,7 @@
+{
+  "slug": "riskweft",
+  "name": "RiskWeft",
+  "title": "Make architecture risks explainable.",
+  "description": "Review architecture revisions, trust boundaries and the evidence behind each design decision.",
+  "accent": "#85e4c2"
+}

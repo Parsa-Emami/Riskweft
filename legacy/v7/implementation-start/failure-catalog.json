@@ -1,0 +1,18 @@
+{
+  "project": "RiskWeft",
+  "failures": [
+    "malformed import",
+    "dangling component reference",
+    "rule-pack mismatch",
+    "merge conflict",
+    "stale revision write",
+    "deleted entity referenced by threat",
+    "schema upgrade"
+  ],
+  "required_result": [
+    "invariants preserved",
+    "observable failure",
+    "bounded retries",
+    "recovery/reconciliation succeeds"
+  ]
+}
