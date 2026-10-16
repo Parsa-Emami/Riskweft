@@ -5,15 +5,8 @@ name: control-plane
 
 on:
   push:
-    paths:
-      - 'apps/control-plane/**'
-      - '.github/workflows/backend.yml'
-      - 'contracts/**'
+    branches: [main]
   pull_request:
-    paths:
-      - 'apps/control-plane/**'
-      - '.github/workflows/backend.yml'
-      - 'contracts/**'
   workflow_dispatch: {}
 
 permissions:
