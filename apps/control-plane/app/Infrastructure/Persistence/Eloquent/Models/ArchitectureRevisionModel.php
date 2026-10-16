@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Eloquent\Models;
 
 use App\Domain\Architecture\RevisionStatus;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Persistence shape for App\Domain\Architecture\ArchitectureRevision.
+ *
+ * Read types reflect the actual enum, JSON and immutable-date casts below.
+ *
+ * @property-read RevisionStatus $status
+ * @property-read array<string, mixed> $canonical_document
+ * @property-read CarbonImmutable $committed_at
  *
  * No `updated_at`: an ArchitectureRevision is immutable once committed
  * (Frozen v1 Invariant #1), and the absence of an "updated at" column makes

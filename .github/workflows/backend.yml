@@ -1,12 +1,7 @@
 name: control-plane
 
-# Phase 0 exit criterion (ROADMAP_V7.md Definition of Done: "CI is green
-# from a clean checkout"). This workflow is the actual, executable proof
-# that tests/Unit and tests/Feature pass - the sandbox that authored this
-# code has no PHP/Composer/PostgreSQL runtime and could not run them itself
-# (see docs/phase-0-exit-evidence.md), so this is the first real execution
-# of the Phase 0 test suite. A green run here is what turns this phase's
-# status from "code-complete" into "verified".
+# Verify the preserved optional Laravel API. This workflow does not certify
+# the planned browser-local core engine or mark C tasks complete.
 
 on:
   push:
@@ -20,6 +15,9 @@ on:
       - '.github/workflows/backend.yml'
       - 'contracts/**'
   workflow_dispatch: {}
+
+permissions:
+  contents: read
 
 defaults:
   run:
@@ -40,16 +38,18 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U riskweft -d riskweft_test"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
 
       - name: Set up PHP 8.3
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea
         with:
           php-version: '8.3'
           extensions: mbstring, pdo, pdo_pgsql, pgsql, redis, bcmath, ctype, dom, fileinfo, filter, intl, json, openssl, tokenizer, xml
@@ -57,7 +57,7 @@ jobs:
           tools: composer:v2
 
       - name: Cache composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: apps/control-plane/vendor
           key: composer-${{ hashFiles('apps/control-plane/composer.lock') }}

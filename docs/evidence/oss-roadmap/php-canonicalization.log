@@ -1,0 +1,11 @@
+[PASS] repeated runs of the same document produce byte-identical canonical JSON
+[PASS] repeated runs produce the same content hash
+[PASS] entity array order does not affect the canonical form
+[PASS] attribute key insertion order does not affect the canonical form
+[PASS] a semantically different document produces a different hash
+[PASS] golden fixture matches the exact string pinned in CanonicalizerTest.php
+[PASS] golden fixture hash matches sha256 of the golden JSON
+[PASS] list-typed attribute VALUES keep their given order (not treated as sortable maps)
+[PASS] floating point attribute values are rejected
+
+All canonicalization/hashing determinism checks passed.
