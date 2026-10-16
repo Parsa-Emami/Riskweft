@@ -290,5 +290,7 @@
     "base_commit": "beddfb8e26f5ba3980a35df137927759812f4bec",
     "backend": "apps/control-plane",
     "backend_tests": "not_run_in_this_environment"
-  }
+  },
+  "roadmap_contract": "clone-to-run-oss-v1",
+  "current_core_ready": false
 }

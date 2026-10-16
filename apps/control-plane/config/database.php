@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Infrastructure\Config\SecretReferenceResolver;
 
-$pgsqlDsn = SecretReferenceResolver::resolve(env('DATABASE_DSN_REF'));
+$pgsqlDsn = SecretReferenceResolver::resolve(env('DATABASE_DSN_REF'), static fn (string $name): mixed => env($name));
 $pgsqlParts = $pgsqlDsn !== null ? SecretReferenceResolver::parseDsn($pgsqlDsn) : [];
 
 return [
@@ -42,7 +42,7 @@ return [
         'client' => 'phpredis',
 
         'default' => (function () {
-            $dsn = SecretReferenceResolver::resolve(env('VALKEY_DSN_REF'));
+            $dsn = SecretReferenceResolver::resolve(env('VALKEY_DSN_REF'), static fn (string $name): mixed => env($name));
             $parts = $dsn !== null ? SecretReferenceResolver::parseDsn($dsn) : [];
 
             return [

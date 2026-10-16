@@ -1,0 +1,37 @@
+{
+  "project": "RiskWeft",
+  "status": "planned acceptance contract; not executed domain proof",
+  "input": "repository-authored synthetic licensed fixtures",
+  "steps": [
+    "Open synthetic model",
+    "add boundary",
+    "evaluate",
+    "inspect explained threat",
+    "edit flow",
+    "semantic diff",
+    "export",
+    "import on clean browser."
+  ],
+  "expected_invariants": [
+    "Canvas is a projection",
+    "Stable IDs and semantic normalization",
+    "Threats retain matched facts and revision provenance"
+  ],
+  "negative_uat": [
+    "مدل API با یک trust boundary بساز و تهدید را همراه rule ID و facts ببین",
+    "همان فایل و rule pack را دوباره ارزیابی کن؛ hash و findings برابر باشند",
+    "JSON export را در مرورگر جدید وارد کن؛ داده، review و diff حفظ شوند"
+  ],
+  "clean_host_commands": [
+    "git clone https://github.com/Parsa-Emami/Riskweft.git",
+    "cd Riskweft",
+    "npm run setup",
+    "npm start"
+  ],
+  "requires_at_C30": [
+    "real engine and required local providers",
+    "the entire workflow",
+    "restart and restore",
+    "no paid/cloud account or sibling clone"
+  ]
+}

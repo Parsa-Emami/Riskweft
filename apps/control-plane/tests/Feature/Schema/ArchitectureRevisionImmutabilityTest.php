@@ -10,7 +10,6 @@ use App\Infrastructure\Persistence\Eloquent\Models\ProjectModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
@@ -27,7 +26,6 @@ final class ArchitectureRevisionImmutabilityTest extends TestCase
     {
         $project = ProjectModel::factory()->create();
         $revision = ArchitectureRevisionModel::create([
-            'id' => (string) Str::uuid(),
             'project_id' => $project->id,
             'parent_revision_id' => null,
             'sequence_no' => 1,
@@ -56,7 +54,6 @@ final class ArchitectureRevisionImmutabilityTest extends TestCase
         // `status` itself to stay mutable.
         $project = ProjectModel::factory()->create();
         $revision = ArchitectureRevisionModel::create([
-            'id' => (string) Str::uuid(),
             'project_id' => $project->id,
             'parent_revision_id' => null,
             'sequence_no' => 1,

@@ -1,0 +1,15 @@
+{
+  "project": "RiskWeft",
+  "reviewed_commit": "51c195a32e45f96c39f3affc4574781a10ddcbbb",
+  "readiness": "WEB_FOUNDATION",
+  "core_ready": false,
+  "implemented": [
+    "responsive web shell",
+    "roadmap browser",
+    "local bounded JSON structure preview"
+  ],
+  "engine": "existing optional partial Laravel API, not full core",
+  "next_task": "C01",
+  "next_command": "npm run plan -- next",
+  "full_product_endpoint": "C30 locally usable; C40 full published OSS v1"
+}

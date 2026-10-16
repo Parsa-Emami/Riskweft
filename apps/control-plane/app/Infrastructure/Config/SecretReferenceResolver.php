@@ -27,10 +27,11 @@ final class SecretReferenceResolver
     private const SUPPORTED_LOCAL_PROVIDER = 'local';
 
     /**
+     * @param  callable(string): mixed  $lookup  Configuration-owned environment lookup.
      * @return string|null null only when $reference itself is null/empty
-     *         (i.e. the caller did not configure this secret at all).
+     *                     (i.e. the caller did not configure this secret at all).
      */
-    public static function resolve(?string $reference): ?string
+    public static function resolve(?string $reference, callable $lookup): ?string
     {
         if ($reference === null || trim($reference) === '') {
             return null;
@@ -58,9 +59,9 @@ final class SecretReferenceResolver
         }
 
         $envName = self::localEnvVarName($name);
-        $value = env($envName);
+        $value = $lookup($envName);
 
-        if ($value === null || $value === '') {
+        if (! is_string($value) || $value === '') {
             throw new \RuntimeException(
                 "Missing local secret value for reference [{$reference}]: expected environment ".
                 "variable [{$envName}] to be set (see apps/control-plane/.env.example)."

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Eloquent\Models;
 
+use Database\Factories\UserModelFactory;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +21,7 @@ use Laravel\Sanctum\HasApiTokens;
  * ultimately resolves to, not a login system RiskWeft exposes over HTTP (no
  * such route exists in the frozen OpenAPI contract).
  */
+#[UseFactory(UserModelFactory::class)]
 final class UserModel extends Authenticatable
 {
     use HasApiTokens, HasFactory, HasUuids;

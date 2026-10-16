@@ -16,7 +16,9 @@ return [
     // docs/phase-0-exit-evidence.md).
     'stateful' => [],
 
-    'guard' => ['web'],
+    // There is no session guard in this bearer-only API. Falling back to
+    // 'web' (itself a Sanctum guard) recursively re-enters the same driver.
+    'guard' => [],
 
     'expiration' => null,
 

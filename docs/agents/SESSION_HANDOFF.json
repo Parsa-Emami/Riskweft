@@ -1,0 +1,44 @@
+{
+  "project": "RiskWeft",
+  "date": "2026-10-16",
+  "base_commit": "c032e05449e76b40c1f26ed1beb145a728a052f9",
+  "scope": "Repair CI for all main and Dependabot heads: historical source records, exact current Git checkout and real regression tests",
+  "core_tasks_verified": [],
+  "commands": [
+    "python3 -m unittest discover -s tests/engineering -p 'test_*.py' -v",
+    "python3 scripts/verify_ci_source.py",
+    "npm run check",
+    "npm run test:clone"
+  ],
+  "validation_results": "docs/evidence/ci-integrity-repair.json",
+  "final_source_identity": "Read the source_identity in docs/evidence/oss-roadmap.json; it excludes evidence and SHA256SUMS.txt to avoid recursive hashing. This is a source digest, not a fabricated remote commit ID.",
+  "protected_paths_changed": [],
+  "current_core_ready": false,
+  "next_task": "C01",
+  "next_command": "npm run plan -- next",
+  "continuation": "See docs/engineering/CI_SOURCE_INTEGRITY.md for source proof scope. Historical evidence retains its original source; current runtime results are the actual new CI jobs. Core implementation remains at the existing next task.",
+  "optional_api": {
+    "changes": [
+      "Pint-compatible unary spacing",
+      "PHPStan 2 supported configuration at level 5",
+      "config-owned injected secret lookup",
+      "model read types matching actual enum/JSON/immutable-date casts",
+      "four meaningful unit regressions",
+      "committed Composer lock and immutable CI action pins",
+      "explicit factory discovery for nested models",
+      "bearer-only guard avoids recursive session fallback",
+      "Git-aware source manifest and real clean-clone/cache/corruption regression",
+      "registered finite global API limiter with principal isolation regression",
+      "trusted revision identity assigned explicitly while mass assignment remains guarded",
+      "schema-trigger fixtures use generated identities without changing assertions",
+      "preserve FORBIDDEN when Laravel wraps policy exceptions as AccessDeniedHttpException",
+      "read-test fixture writes as modeler then switches to viewer; viewer writes remain denied"
+    ],
+    "local_checks": [
+      "vendor/bin/pint --test",
+      "vendor/bin/phpstan analyse --memory-limit=1G --no-progress --debug",
+      "vendor/bin/phpunit --testsuite Unit --colors=never"
+    ],
+    "full_postgres_suite": "Run by the existing control-plane GitHub Actions workflow; local evidence does not claim PostgreSQL integration passed."
+  }
+}
