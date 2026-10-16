@@ -33,6 +33,9 @@ final class AppServiceProvider extends ServiceProvider
         // load. Scoped per authenticated principal (falling back to IP for
         // an unauthenticated caller) so one noisy client cannot exhaust
         // another's budget.
+        // throttleApi() attaches this named limiter to the whole API group.
+        RateLimiter::for('api', static fn (Request $request) => Limit::perMinute(120)->by($request->user()?->getAuthIdentifier() ?? $request->ip()));
+
         RateLimiter::for('riskweft-writes', static fn (Request $request) => Limit::perMinute(30)->by($request->user()?->getAuthIdentifier() ?? $request->ip()));
 
         RateLimiter::for('riskweft-reads', static fn (Request $request) => Limit::perMinute(120)->by($request->user()?->getAuthIdentifier() ?? $request->ip()));
