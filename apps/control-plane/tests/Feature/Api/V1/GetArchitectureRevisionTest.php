@@ -18,7 +18,7 @@ final class GetArchitectureRevisionTest extends TestCase
     {
         $user = UserModel::factory()->create();
         $project = ProjectModel::factory()->create();
-        ProjectMemberModel::query()->create(['project_id' => $project->id, 'user_id' => $user->id, 'role' => 'viewer']);
+        $membership = ProjectMemberModel::query()->create(['project_id' => $project->id, 'user_id' => $user->id, 'role' => 'modeler']);
 
         $entityId = '11111111-1111-4111-8111-111111111111';
         $commit = $this->actingAs($user, 'sanctum')
@@ -34,6 +34,9 @@ final class GetArchitectureRevisionTest extends TestCase
         $commit->assertStatus(202);
         $revisionId = $commit->json('data.id');
         $committedHash = $commit->json('data.content_hash');
+
+        // Create through an authorized writer, then exercise the viewer read policy.
+        $membership->update(['role' => 'viewer']);
 
         $read = $this->actingAs($user, 'sanctum')->getJson("/api/v1/revisions/{$revisionId}");
 

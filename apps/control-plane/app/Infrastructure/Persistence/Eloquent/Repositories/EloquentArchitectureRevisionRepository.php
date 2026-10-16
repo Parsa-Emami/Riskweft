@@ -73,8 +73,7 @@ final class EloquentArchitectureRevisionRepository implements ArchitectureRevisi
 
             $nextSequence = $project->head_version + 1;
 
-            ArchitectureRevisionModel::create([
-                'id' => $revisionId,
+            $revisionRow = new ArchitectureRevisionModel([
                 'project_id' => $projectId,
                 'parent_revision_id' => $expectedBaseRevisionId,
                 'sequence_no' => $nextSequence,
@@ -87,6 +86,9 @@ final class EloquentArchitectureRevisionRepository implements ArchitectureRevisi
                 'committed_by_user_id' => $committedByUserId,
                 'committed_at' => $committedAt,
             ]);
+            // The application owns this identity; keep it guarded from mass input.
+            $revisionRow->id = $revisionId;
+            $revisionRow->save();
 
             $entityRowIdByLogicalId = [];
             foreach ($document->entities as $entity) {

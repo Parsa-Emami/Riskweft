@@ -5,9 +5,9 @@
   "passed": true,
   "planning_template": false,
   "scope": "Current web foundation, OSS roadmap contracts and clone/setup tooling; no full domain implementation certified",
-  "source_identity": "sha256:d6a9c0416e8619c1eabd1d1bf4f3c9f3221d2e86643d362bda99ab2d4a16a9ce",
+  "source_identity": "sha256:99d9f96c0e2592ac86d60aae5729e4451a7db9496f2b6da1be7c8f2ff92ad9de",
   "source_identity_method": "scripts/source_identity.py: repository source excluding docs/evidence and SHA256SUMS.txt",
-  "base_commit": "51c195a32e45f96c39f3affc4574781a10ddcbbb",
+  "base_commit": "3d8822055335a2f231b179fdd74fdcf08bba864d",
   "core_ready": false,
   "core_tasks_verified": [],
   "counts": {
@@ -23,7 +23,7 @@
   },
   "clone_proof": {
     "passed": true,
-    "stagedTree": "29e11f0269785a838ec98f4d36e9a2ec63f6373d",
+    "stagedTree": "1ea27770226c183c5944c7fafb72ecd376507b4c",
     "proof": "real git clone -> npm run setup -> web startup",
     "coreReady": false
   },
@@ -77,6 +77,12 @@
       "output": "docs/evidence/oss-roadmap/release-guard.log"
     },
     {
+      "command": "python3 -m unittest discover -s tests/engineering -p test_*.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "output": "docs/evidence/oss-roadmap/source-manifest-regression.log"
+    },
+    {
       "working_directory": "apps/control-plane",
       "command": "php vendor/bin/pint --test",
       "exit_code": 0,
@@ -123,8 +129,8 @@
   "remaining": "C01-C40 remain unverified; C30 requires full real-engine workflow, restart and restore; C40 requires authorized full publication and clean installed proof.",
   "optional_api": {
     "php": "8.3.6",
-    "unit_tests": 24,
-    "unit_assertions": 36,
+    "unit_tests": 29,
+    "unit_assertions": 169,
     "phpstan_level": 5,
     "postgres_integration": "Not executed locally; verify control-plane CI on the actual pushed commit."
   }
