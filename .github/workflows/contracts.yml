@@ -27,3 +27,5 @@ jobs:
         run: |
           python3 scripts/hashes.py
           python3 scripts/source_identity.py --check
+      - name: Source manifest regression
+        run: python3 -m unittest discover -s tests/engineering -p 'test_*.py'

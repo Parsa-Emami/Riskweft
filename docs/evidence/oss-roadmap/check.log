@@ -33,18 +33,18 @@ dist/web/index.html                   0.79 kB │ gzip:  0.47 kB
 dist/web/assets/index-D-OxGjUB.css    4.36 kB │ gzip:  1.62 kB
 dist/web/assets/index-Ce0DODGc.js   241.24 kB │ gzip: 75.94 kB
 
-✓ built in 124ms
+✓ built in 120ms
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
 > @parsa-emami/riskweft-web@0.0.1 test
 > node --test tests/web/*.test.mjs
 
-✔ public configuration fails closed on engine flags, external endpoints, unknown keys and project mismatch (1.437713ms)
-✔ preview rejects hostile structure, excessive UTF-8 size and excessive complexity (1.491554ms)
-✔ HTTP isolation, cache rules, health semantics, methods, traversal and symlink containment (74.706133ms)
-✔ generated project and runtime identity agree with exactly forty original product tasks (1.254628ms)
-✔ setup validates toolchain/options and stops at the first failed install (1.48861ms)
-✔ roadmap rejects absent resources, escaping paths and unproved completion (19.975888ms)
+✔ public configuration fails closed on engine flags, external endpoints, unknown keys and project mismatch (1.4713ms)
+✔ preview rejects hostile structure, excessive UTF-8 size and excessive complexity (1.537479ms)
+✔ HTTP isolation, cache rules, health semantics, methods, traversal and symlink containment (83.022465ms)
+✔ generated project and runtime identity agree with exactly forty original product tasks (1.546362ms)
+✔ setup validates toolchain/options and stops at the first failed install (1.175738ms)
+✔ roadmap rejects absent resources, escaping paths and unproved completion (17.675907ms)
 ℹ tests 6
 ℹ suites 0
 ℹ pass 6
@@ -52,4 +52,4 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 169.545554
+ℹ duration_ms 178.544407

@@ -1,8 +1,8 @@
 {
   "project": "RiskWeft",
   "date": "2026-10-16",
-  "base_commit": "51c195a32e45f96c39f3affc4574781a10ddcbbb",
-  "scope": "OSS roadmap, clone/setup tooling, agent execution contract and preserved optional API CI repair; full core tasks are not certified",
+  "base_commit": "56d4f14b17f8f55c13dea7f386187ff692849951",
+  "scope": "OSS roadmap, clone/setup tooling, agent execution contract and preserved optional API CI repair; full core tasks are not certified; follow-up repairs for factory discovery, stateless authentication and ignored-cache manifest determinism",
   "core_tasks_verified": [],
   "commands": [
     "npm ci --ignore-scripts --no-fund",
@@ -12,7 +12,8 @@
     "npm run package:web",
     "python3 scripts/plan.py validate",
     "python3 scripts/validate_repo.py",
-    "npm run release:check"
+    "npm run release:check",
+    "python3 -m unittest discover -s tests/engineering -p test_*.py"
   ],
   "validation_results": "docs/evidence/oss-roadmap.json",
   "final_source_identity": "Read the source_identity in docs/evidence/oss-roadmap.json; it excludes evidence and SHA256SUMS.txt to avoid recursive hashing. This is a source digest, not a fabricated remote commit ID.",
@@ -28,7 +29,10 @@
       "config-owned injected secret lookup",
       "model read types matching actual enum/JSON/immutable-date casts",
       "four meaningful unit regressions",
-      "committed Composer lock and immutable CI action pins"
+      "committed Composer lock and immutable CI action pins",
+      "explicit factory discovery for nested models",
+      "bearer-only guard avoids recursive session fallback",
+      "Git-aware source manifest and real clean-clone/cache/corruption regression"
     ],
     "local_checks": [
       "vendor/bin/pint --test",
