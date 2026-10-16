@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -53,7 +54,7 @@ final class ApiExceptionRenderer
                 return ApiResponse::error($requestId, 401, 'UNAUTHENTICATED', 'Authentication is required.', false);
             }
 
-            if ($e instanceof AuthorizationException) {
+            if ($e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException) {
                 return ApiResponse::error($requestId, 403, 'FORBIDDEN', 'This action is unauthorized.', false);
             }
 

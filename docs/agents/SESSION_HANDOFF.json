@@ -1,7 +1,7 @@
 {
   "project": "RiskWeft",
   "date": "2026-10-16",
-  "base_commit": "9bb6239de8057f5fe984f2b7262b42daa43fd473",
+  "base_commit": "3d8822055335a2f231b179fdd74fdcf08bba864d",
   "scope": "OSS roadmap, clone/setup tooling, agent execution contract and preserved optional API CI repair; full core tasks are not certified; follow-up repairs for factory discovery, stateless authentication and ignored-cache manifest determinism",
   "core_tasks_verified": [],
   "commands": [
@@ -35,7 +35,9 @@
       "Git-aware source manifest and real clean-clone/cache/corruption regression",
       "registered finite global API limiter with principal isolation regression",
       "trusted revision identity assigned explicitly while mass assignment remains guarded",
-      "schema-trigger fixtures use generated identities without changing assertions"
+      "schema-trigger fixtures use generated identities without changing assertions",
+      "preserve FORBIDDEN when Laravel wraps policy exceptions as AccessDeniedHttpException",
+      "read-test fixture writes as modeler then switches to viewer; viewer writes remain denied"
     ],
     "local_checks": [
       "vendor/bin/pint --test",

@@ -3,8 +3,8 @@ PHPUnit 12.5.40 by Sebastian Bergmann and contributors.
 Runtime:       PHP 8.3.6
 Configuration: $REPOSITORY/apps/control-plane/phpunit.xml
 
-............................                                      28 / 28 (100%)
+.............................                                     29 / 29 (100%)
 
-Time: 00:00.182, Memory: 42.50 MB
+Time: 00:00.214, Memory: 42.50 MB
 
-OK (28 tests, 166 assertions)
+OK (29 tests, 169 assertions)

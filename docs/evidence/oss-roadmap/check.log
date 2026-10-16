@@ -39,12 +39,12 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 > @parsa-emami/riskweft-web@0.0.1 test
 > node --test tests/web/*.test.mjs
 
-✔ public configuration fails closed on engine flags, external endpoints, unknown keys and project mismatch (1.189587ms)
-✔ preview rejects hostile structure, excessive UTF-8 size and excessive complexity (1.35322ms)
-✔ HTTP isolation, cache rules, health semantics, methods, traversal and symlink containment (103.728378ms)
-✔ generated project and runtime identity agree with exactly forty original product tasks (1.279992ms)
-✔ setup validates toolchain/options and stops at the first failed install (1.069197ms)
-✔ roadmap rejects absent resources, escaping paths and unproved completion (13.781226ms)
+✔ public configuration fails closed on engine flags, external endpoints, unknown keys and project mismatch (1.017053ms)
+✔ preview rejects hostile structure, excessive UTF-8 size and excessive complexity (1.237298ms)
+✔ HTTP isolation, cache rules, health semantics, methods, traversal and symlink containment (85.608123ms)
+✔ generated project and runtime identity agree with exactly forty original product tasks (1.466376ms)
+✔ setup validates toolchain/options and stops at the first failed install (1.07396ms)
+✔ roadmap rejects absent resources, escaping paths and unproved completion (13.081976ms)
 ℹ tests 6
 ℹ suites 0
 ℹ pass 6
@@ -52,4 +52,4 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 189.306847
+ℹ duration_ms 168.513321

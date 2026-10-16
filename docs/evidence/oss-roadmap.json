@@ -5,9 +5,9 @@
   "passed": true,
   "planning_template": false,
   "scope": "Current web foundation, OSS roadmap contracts and clone/setup tooling; no full domain implementation certified",
-  "source_identity": "sha256:3a18a35ec785c52b0da2acc30711e1d687caacb121bd965b83933b09f0781275",
+  "source_identity": "sha256:99d9f96c0e2592ac86d60aae5729e4451a7db9496f2b6da1be7c8f2ff92ad9de",
   "source_identity_method": "scripts/source_identity.py: repository source excluding docs/evidence and SHA256SUMS.txt",
-  "base_commit": "9bb6239de8057f5fe984f2b7262b42daa43fd473",
+  "base_commit": "3d8822055335a2f231b179fdd74fdcf08bba864d",
   "core_ready": false,
   "core_tasks_verified": [],
   "counts": {
@@ -23,7 +23,7 @@
   },
   "clone_proof": {
     "passed": true,
-    "stagedTree": "72abf6533cb12e1b831e29bfe29c37057c6d4f61",
+    "stagedTree": "1ea27770226c183c5944c7fafb72ecd376507b4c",
     "proof": "real git clone -> npm run setup -> web startup",
     "coreReady": false
   },
@@ -129,8 +129,8 @@
   "remaining": "C01-C40 remain unverified; C30 requires full real-engine workflow, restart and restore; C40 requires authorized full publication and clean installed proof.",
   "optional_api": {
     "php": "8.3.6",
-    "unit_tests": 28,
-    "unit_assertions": 166,
+    "unit_tests": 29,
+    "unit_assertions": 169,
     "phpstan_level": 5,
     "postgres_integration": "Not executed locally; verify control-plane CI on the actual pushed commit."
   }
