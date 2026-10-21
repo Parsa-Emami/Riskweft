@@ -42,7 +42,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up PHP 8.3
-        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
         with:
           php-version: '8.3'
           extensions: mbstring, pdo, pdo_pgsql, pgsql, redis, bcmath, ctype, dom, fileinfo, filter, intl, json, openssl, tokenizer, xml
